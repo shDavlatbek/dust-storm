@@ -8,16 +8,25 @@ from utils.unitofwork import IUnitOfWork
 class StationService:
     async def get_stations(self, uow: IUnitOfWork, filters = None):
         async with uow:
-            stations = await uow.station.find_all()
             if filters:
                 filters = filters.model_dump()
-                for station in stations:
-                    filters["station"] = station.number
+                if filters["station"]:
+                    station = await uow.station.find_one(id=filters["station"])
                     station.parameters = await uow.parameter.find_all(
                         filters=filters,
-                        order_by="datetime",
+                        order_by="date",
                         order_desc=True
                     )
+                    return station
+                else:
+                    stations = await uow.station.find_all()
+                    for station in stations:
+                        filters["station"] = station.id
+                        station.parameters = await uow.parameter.find_all(
+                            filters=filters,
+                            order_by="date",
+                            order_desc=True
+                        )
             return stations
         
     async def get_station(self, uow: IUnitOfWork, filters = None):
@@ -28,7 +37,7 @@ class StationService:
             
             station.parameters = await uow.parameter.find_all(
                     filters=filters.model_dump(),
-                    order_by="datetime",
+                    order_by="date",
                     order_desc=True
                 )
             

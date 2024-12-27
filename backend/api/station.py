@@ -6,7 +6,6 @@ from api.dependencies import UOWDep
 from services.station import StationService, ParameterService
 from schemas.station import ParameterSchema, ParameterQuery, ParameterAdd, ParameterUpdate, StationQuery
 from typing import Annotated, Optional
-from fastapi_cache.decorator import cache
 
 
 router = APIRouter(
@@ -20,7 +19,6 @@ TIMEOUT = 30
 
 
 @router.get("/")
-@cache(expire=CACHE_EXPIRE)
 async def get_stations(
     uow: UOWDep,
     filters: Annotated[StationQuery, Query()] = None,
@@ -30,7 +28,6 @@ async def get_stations(
 
 
 @router.get("/parameter")
-@cache(expire=CACHE_EXPIRE)
 async def get_parameters(
     uow: UOWDep,
     filters: Annotated[ParameterQuery, Query()],
@@ -60,7 +57,6 @@ async def edit_parameter(
 
 
 @router.get("/{id}")
-@cache(expire=CACHE_EXPIRE) 
 async def get_station(
     uow: UOWDep,
     filters: Annotated[StationQuery, Query()],

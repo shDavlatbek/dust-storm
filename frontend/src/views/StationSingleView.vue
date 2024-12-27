@@ -38,46 +38,23 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex">
-                <h3 class="card-title">Social referrals</h3>
+                <h3 class="card-title">AQI darajasi</h3>
                 <div class="ms-auto">
                   <div class="dropdown">
-                    <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 7 days</a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                      <a class="dropdown-item active" href="#">Last 7 days</a>
-                      <a class="dropdown-item" href="#">Last 30 days</a>
-                      <a class="dropdown-item" href="#">Last 3 months</a>
-                    </div>
+                    <a class="dropdown-toggle text-secondary" aria-haspopup="true" aria-expanded="false" aria-disabled="true">Ohirgi 10 kun</a>
                   </div>
                 </div>
               </div>
-              <apexchart height="350" type="line" 
-                :options="gwlChartOptions" 
-                :series="gwlChartSeries"
-              ></apexchart>
+              <AQIChartSingle :station="station" />
             </div>
           </div>
         </div>
         <div class="col-12 col-lg-6">
           <div class="card">
-            <div class="card-body">
-              <div class="d-flex">
-                <h3 class="card-title">Social referrals</h3>
-                <div class="ms-auto">
-                  <div class="dropdown">
-                    <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 7 days</a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                      <a class="dropdown-item active" href="#">Last 7 days</a>
-                      <a class="dropdown-item" href="#">Last 30 days</a>
-                      <a class="dropdown-item" href="#">Last 3 months</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <apexchart height="350" type="line" 
-                :options="gwlChartOptions" 
-                :series="gwlChartSeries"
-              ></apexchart>
+            <div class="card-header">
+              <h3 class="card-title">Stansiya xaritadagi ko'rinishi</h3>
             </div>
+            <AQIMap :stations="[station]" :view-coordinates="[station.lat, station.lon]" :view-zoom="13" />
           </div>
         </div>
         <div class="col">
@@ -130,6 +107,8 @@ import { ref } from 'vue';
 import { format } from 'date-fns';
 import { IconPencil } from '@tabler/icons-vue'
 import ModalAlert from '@/components/ModalAlert.vue';
+import AQIMap from '@/components/AQIMap.vue';
+import AQIChartSingle from '@/components/AQIChartSingle.vue';
 
 
 export default {
@@ -142,23 +121,10 @@ export default {
     modalOnCloseFunc: () => { },
     parameter_names: [],
     parameters: [],
-    gwlChartOptions: {
-      chart: {
-        type: 'line'
-      },
-      xaxis: {
-        categories: ['1991-01-01', 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-        type: 'datetime',
-      }
-    },
-    gwlChartSeries: [{
-      name: 'series-1',
-      data: [30, 40, 45, 50, 49, 60, 70, 91]
-    }]
   }),
 
   components: {
-    IconPencil, ModalAlert
+    IconPencil, ModalAlert, AQIMap, AQIChartSingle
   },
 
   setup() {
@@ -195,28 +161,28 @@ export default {
         grouped[date][param.parameter_name] = param.value;
       }
       return grouped;
-    }
+    },
   },
 
   async mounted() {
-    const stationId = this.$route?.params?.id;
-    if (stationId) {
+    const stationNumber = this.$route?.params?.number;
+    if (stationNumber) {
       try {
-        this.station = await getStation(stationId);
+        this.station = await getStation(stationNumber);
         // this.setGwlOptionsSeries(this.parameters);
       } catch (error) {
-        if (error?.response?.status === 404) {
-          this.$router.replace('/404');
-        } else {
+        // if (error?.response?.status === 404) {
+        //   this.$router.replace('/404');
+        // } else {
           console.error('Error fetching station data:', error);
           this.modalTitle = "Ma'lumotlarni yuklashda xatolik yuzaga keldi";
           this.modalDesc = `Xato xabari: ${error?.message}`;
           this.modalType = 'danger';
           this.modalAlert.openModal();
-        }
+        // }
       }
     } else {
-      console.error('No stationId found in route parameters.');
+      this.$router.replace('/404');
     }
   },
 };

@@ -1,9 +1,9 @@
 import { reqApi } from "./base";
 
-const PREFIX = "/station";
+const PREFIX = "/station/";
 
 export const addStation = async (data) => {
-  return (await reqApi(`${PREFIX}/add`, data, "POST")).data;
+  return (await reqApi(`${PREFIX}add/`, data, "POST")).data;
 };
 
 export const getStations = async () => {
@@ -14,13 +14,19 @@ export const getStationsParams = async (start_date=null, end_date=null) => {
   const filters = {}
   if (start_date) filters.start_date = start_date;
   if (end_date) filters.end_date = end_date;
-  return (await reqApi(`${PREFIX}/`,
+  return (await reqApi(PREFIX,
     filters
   )).data;
 };
 
-export const getStation = async (id) => {
-  return (await reqApi(`/station/${id}`)).data;
+export const getStation = async (station=null, start_date=null, end_date=null) => {
+  const filters = {}
+  if (station) filters.station = station;
+  if (start_date) filters.start_date = start_date;
+  if (end_date) filters.end_date = end_date;
+  return (await reqApi(PREFIX,
+    filters
+  )).data;
 };
 
 export const getParameterNames = async () => {

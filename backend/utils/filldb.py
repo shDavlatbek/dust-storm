@@ -9,7 +9,7 @@ from schemas.station import ParameterSchema, ParameterQuery, ParameterAdd, Param
 from typing import Annotated, Optional
 from fastapi_cache.decorator import cache
 from pydantic_settings import BaseSettings
-from utils.common import now_utc_hours
+from utils.common import now_hours
 import aiohttp
 import asyncio
 
@@ -72,7 +72,7 @@ async def fetch_and_fill_data_async(uow: UnitOfWork):
 
             
             start_date = last_record.date_time + timedelta(hours=1)
-            end_date = now_utc_hours()
+            end_date = now_hours()
             
 
             tasks = []

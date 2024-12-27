@@ -17,25 +17,25 @@
           </div>
         </div>
         <div id="table-station" class="table-responsive" >
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th><button class="table-sort" data-sort="sort-name">Nomi</button></th>
-                  <th><button class="table-sort" data-sort="sort-number">Raqam</button></th>
-                  <th><button class="table-sort" data-sort="sort-lat">Shimoliy kenglik</button></th>
-                  <th><button class="table-sort" data-sort="sort-lon">Sharqiy uzunlik</button></th>
-                </tr>
-              </thead>
-              <tbody class="table-tbody">
-                <tr class="table-row" v-for="(station, index) in stations" :key="index" @click="navigateToStationSingle(station.id)">
-                  <td class="sort-name">{{ station?.name }}</td>
-                  <td class="sort-number">{{ station?.number }}</td>
-                  <td class="sort-lat">{{ station?.lat }}</td>
-                  <td class="sort-lon">{{ station?.lon }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th><button class="table-sort" data-sort="sort-name">Nomi</button></th>
+                <th><button class="table-sort" data-sort="sort-number">Raqam</button></th>
+                <th><button class="table-sort" data-sort="sort-lat">Shimoliy kenglik</button></th>
+                <th><button class="table-sort" data-sort="sort-lon">Sharqiy uzunlik</button></th>
+              </tr>
+            </thead>
+            <tbody class="table-tbody">
+              <tr class="table-row" v-for="(station, index) in stations" :key="index" @click="navigateToStationSingle(station.number)">
+                <td class="sort-name">{{ station?.name }}</td>
+                <td class="sort-number">{{ station?.number }}</td>
+                <td class="sort-lat">{{ station?.lat }}</td>
+                <td class="sort-lon">{{ station?.lon }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -163,8 +163,8 @@ export default {
         this.list.search(this.searchQuery);
       }
     },
-    navigateToStationSingle(id) {
-      this.$router.push({ name: "StationSingle", params: { id } });
+    navigateToStationSingle(number) {
+      this.$router.push({ name: "StationSingle", params: { number } });
     },
   },
   async mounted() {

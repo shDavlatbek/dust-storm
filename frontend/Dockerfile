@@ -1,26 +1,18 @@
-# Base image for building Vue.js app
-FROM node:22 AS build-stage
+# Use Node.js as the base image for development
+FROM node:22
 
 # Set working directory
 WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy application source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Expose the development server port
+EXPOSE 3000
 
-# Base image for serving built files
-FROM nginx:alpine AS production-stage
-
-# Copy built files to Nginx's html directory
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
-# Expose the Nginx default port
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Command to start the development server
+CMD ["npm", "run", "serve"]

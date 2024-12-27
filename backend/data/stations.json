@@ -1,72 +1,58 @@
 [
   {
     "id": 1,
-    "value_id": "036112022",
-    "name": "Xalqlar do'stligi maydoni",
-    "lon": 69.2407,
-    "lat": 41.3109
+    "height": 66,
+    "name": "Chimboy",
+    "lon": 59.817,
+    "lat": 42.95
   },
   {
     "id": 2,
-    "value_id": "037112022",
-    "name": "Yangi O'zbekiston Bog'i",
-    "lon": 69.437639542329,
-    "lat": 41.329074094709
+    "height": 128,
+    "name": "Jasliq",
+    "lon": 57.5166,
+    "lat": 43.8833
   },
   {
     "id": 3,
-    "value_id": "038112022",
-    "name": "Yangihayot tumani 333-maktab",
-    "lon": 69.2277,
-    "lat": 41.1818
+    "height": 126,
+    "name": "Qoraqalpog'iston",
+    "lon": 56.333,
+    "lat": 44.85
   },
   {
     "id": 4,
-    "value_id": "039112022",
-    "name": "Tuzel-1 557-bog'cha",
-    "lon": 69.3604,
-    "lat": 41.2987
+    "height": 64,
+    "name": "Qo'ng'irot",
+    "lon": 58.933,
+    "lat": 43.083
   },
   {
     "id": 5,
-    "value_id": "040112022",
-    "name": "Bektemir tumani 578-bog'cha",
-    "lon": 69.3738,
-    "lat": 41.2523
+    "height": 55,
+    "name": "Mo'ynoq",
+    "lon": 59.031,
+    "lat": 43.783
   },
   {
     "id": 6,
-    "value_id": "041112022",
-    "name": "Lokomotiv bog'i",
-    "lon": 69.3439,
-    "lat": 41.3551
+    "height": 75,
+    "name": "Nukus",
+    "lon": 59.616,
+    "lat": 42.4833
   },
   {
     "id": 7,
-    "value_id": "042112022",
-    "name": "G'afur G'ulom bog'i",
-    "lon": 69.2133,
-    "lat": 41.282
+    "height": 77,
+    "name": "Taxiatosh",
+    "lon": 59.583,
+    "lat": 42.333
   },
   {
     "id": 8,
-    "value_id": "043112022",
-    "name": "Olmazor tumani, Dermatologiya",
-    "lon": 69.169394091616,
-    "lat": 41.350509321198
-  },
-  {
-    "id": 9,
-    "value_id": "044112022",
-    "name": "Olmazor tumani 423-bog'cha",
-    "lon": 69.2363,
-    "lat": 41.3534
-  },
-  {
-    "id": 10,
-    "value_id": "045112022",
-    "name": "Yangihayot tumani 329-maktab",
-    "lon": 69.203,
-    "lat": 41.222
+    "height": 90,
+    "name": "Taxtako'pir",
+    "lon": 60.3026,
+    "lat": 43.0199
   }
 ]

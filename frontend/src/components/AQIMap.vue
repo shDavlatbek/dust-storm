@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch, defineProps } from 'vue';
+import { onMounted, ref, watch, defineProps, computed } from 'vue';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -11,12 +11,31 @@ const props = defineProps({
     type: Array,
     required: true,
     default: () => []
+  },
+  selectedHour: {
+    type: Number,
+    required: false,
+    default: () => {
+      const now = new Date();
+      now.setMinutes(0);
+      now.setSeconds(0);
+      now.setMilliseconds(0);
+      return now.getHours(); // Returns the current hour (0-23)
+    }
+  },
+  viewCoordinates: {
+    type: Array,
+    required: false,
+    default: () => [41.2773372, 69.2609832]
+  },
+  viewZoom: {
+    type: Number,
+    required: false,
+    default: () => 11
   }
 });
 
 const getAqiColor = (aqi) => {
-
-  
   if (aqi <= 50) return '#00e400';
   if (aqi <= 100) return '#f7D543';
   if (aqi <= 150) return '#ff7e00';
@@ -26,27 +45,29 @@ const getAqiColor = (aqi) => {
   return '#9D6878';
 };
 
-function utcRoundedTime (){
+const utcRoundedTime = computed(() => {
       const now = new Date();
-      return new Date(Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-        now.getUTCHours(), // Keep hours
+      return new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        props.selectedHour, // Keep hours
         0,                 // Set minutes to 0
         0,                 // Set seconds to 0
         0                  // Set milliseconds to 0
-      ));
-    }
+      );
+    })
 
-function getCurTimeParameter(parameters){
-  const curTime = utcRoundedTime();
+function getCurTimeParameter(parameters) {
+  // Вычисляем текущее округленное время
+  const curTime = utcRoundedTime.value; // Если utcRoundedTime - это computed, нужно использовать .value
+
+  // Ищем параметр с совпадающим временем
   const curTimeParameter = parameters.find((param) => {
     const paramTime = new Date(param.datetime);
     return paramTime.getTime() === curTime.getTime();
   });
-  console.log(curTimeParameter);
-  
+
   return curTimeParameter;
 }
 
@@ -66,15 +87,15 @@ const updateMarkers = () => {
       let markerHtml
       if (getCurTimeParameter(station?.parameters)){
         markerHtml = `
-          <div class="station-marker" style="background-color: ${getAqiColor(station?.parameters[0]?.aqi)}">
-            <span>${station?.parameters[0]?.aqi}</span>
+          <div class="station-marker" style="background-color: ${getAqiColor(getCurTimeParameter(station?.parameters).aqi)}">
+            <span>${getCurTimeParameter(station?.parameters).aqi}</span>
           </div>
         `;
 
       }else{
         markerHtml = `
           <div class="station-marker" style="background-color: ${"transparent"}">
-            <span>Sensor mavjud emas</span>
+            <span>Ma'lumot mavjud emas</span>
           </div>
         `;
       }
@@ -86,17 +107,26 @@ const updateMarkers = () => {
       });
 
       // Add circle with opacity
-      L.circle([station.lat, station.lon], {
-        color: getAqiColor(station?.parameters[0]?.aqi),
-        fillColor: getAqiColor(station?.parameters[0]?.aqi),
-        fillOpacity: 0.2,
-        radius: 2000
-      }).addTo(map);
+      if (getCurTimeParameter(station?.parameters)){
+        L.circle([station.lat, station.lon], {
+          color: getAqiColor(getCurTimeParameter(station?.parameters).aqi),
+          fillColor: getAqiColor(getCurTimeParameter(station?.parameters).aqi),
+          fillOpacity: 0.2,
+          radius: 2000
+        }).addTo(map);
+      } else {
+        L.circle([station.lat, station.lon], {
+          color: "black",
+          fillColor: "black",
+          fillOpacity: 0.2,
+          radius: 2000
+        }).addTo(map);
+      }
 
       L.marker([station.lat, station.lon], { icon })
         .bindPopup(`
           <strong>${station?.name}</strong><br>
-          AQI: ${station?.parameters[0]?.aqi}
+          AQI: ${getCurTimeParameter(station?.parameters)?.aqi}
         `)
         .addTo(map);
     });
@@ -106,7 +136,7 @@ const updateMarkers = () => {
 onMounted(() => {
   if (mapContainer.value) {
     // Initialize map
-    map = L.map(mapContainer.value).setView([41.2995, 69.2401], 12);
+    map = L.map(mapContainer.value).setView(props.viewCoordinates, props.viewZoom);
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -118,7 +148,7 @@ onMounted(() => {
   }
 });
 
-watch(() => props.stations, updateMarkers, { deep: true });
+watch([() => props.stations, () => props.selectedHour], updateMarkers, { deep: true });
 </script>
 
 <template>
